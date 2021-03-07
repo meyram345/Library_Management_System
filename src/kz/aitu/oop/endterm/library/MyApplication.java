@@ -8,6 +8,7 @@ import kz.aitu.oop.endterm.library.repositories.interfaces.ILendingRepository;
 import kz.aitu.oop.endterm.library.repositories.interfaces.IStudentRepository;
 
 import java.util.Scanner;
+import java.util.UUID;
 
 public class MyApplication {
     private final LendingController lendingController;
@@ -110,7 +111,7 @@ public class MyApplication {
                 } else if (option == 2) {
                     getLending();
                 } else if (option == 3) {
-                    removeLending();
+                    //removeLending();
                 } else if (option == 4) {
                     getAllLendings();
                 } else if(option==5) {
@@ -167,7 +168,43 @@ public class MyApplication {
         }
     }
 
-    public void librarianStudentMenu() {}
+    public void librarianStudentMenu() {
+        while (true) {
+            System.out.println();
+            System.out.println("Select option");
+            System.out.println("1. Add student");
+            System.out.println("2. Get student");
+            System.out.println("3. Remove student");
+            System.out.println("4. Get students");
+            System.out.println("5. Main menu");
+            System.out.println("0. Exit");
+            System.out.println();
+            try {
+                System.out.println("Enter option (0-5): ");
+                int option = scanner.nextInt();
+                if (option == 1) {
+                    addStudent();
+                } else if (option == 2) {
+                    getStudent();
+                } else if (option == 3) {
+                    removeStudent();
+                } else if (option == 4) {
+                    getAllStudents();
+                } else if(option==5) {
+                    start();
+                }
+                else {
+                    break;
+                }
+
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                scanner.next();
+            }
+
+            System.out.println("***********************************");
+        }
+    }
 
     public void addBook() {
         System.out.println("Please enter title");
@@ -199,11 +236,20 @@ public class MyApplication {
         System.out.println(response);
     }
 
+    public void removeStudent() {
+        System.out.println("Please enter name of the student you want to remove");
+        String name = scanner.next();
+        name += scanner.nextLine();
+
+        String response = studentController.removeStudent(name);
+        System.out.println(response);
+    }
+
     public void getBook() {
         System.out.println("please enter id");
         String id = scanner.next();
-
-        String response = bookController.getBook(id);
+        UUID uuid = UUID.fromString(id);
+        String response = bookController.getBook(uuid);
         System.out.println(response);
     }
 
@@ -214,6 +260,7 @@ public class MyApplication {
     public void addStudent() {
         System.out.println("Please enter name of the student");
         String name = scanner.next();
+        name += scanner.nextLine();
 
         String response = studentController.createStudent(name);
         System.out.println(response);
@@ -223,8 +270,9 @@ public class MyApplication {
     public void getStudent() {
         System.out.println("please enter student id");
         String id = scanner.next();
+        UUID uuid = UUID.fromString(id);
 
-        String response = studentController.getStudent(id);
+        String response = studentController.getStudent(uuid);
         System.out.println(response);
     }
 
@@ -234,52 +282,59 @@ public class MyApplication {
     }
 
     public void addLending() {
-        System.out.println("please enter student_name");
-        String student_name = scanner.next();
-        student_name += scanner.nextLine();
+//        System.out.println("please enter student_name");
+//        String student_name = scanner.next();
+//        student_name += scanner.nextLine();
 
         System.out.println("Please enter lending status");
         String lending_status = scanner.next();
 
-        System.out.println("please enter title of the book");
-        String title = scanner.next();
-        title += scanner.nextLine();
+//        System.out.println("please enter title of the book");
+//        String title = scanner.next();
+//        title += scanner.nextLine();
 
-        System.out.println("PLease enter author of the book");
-        String author = scanner.next();
-        author += scanner.nextLine();
+//        System.out.println("PLease enter author of the book");
+//        String author = scanner.next();
+//        author += scanner.nextLine();
 
         System.out.println("Please enter borrowed date");
         String borrowed_date = scanner.next();
 
-        System.out.println("due_date");
-        String due_date = scanner.next();
+//        System.out.println("due_date");
+//        String due_date = scanner.next();
+
+        System.out.println("book id");
+        String book_id = scanner.next();
+        book_id += scanner.nextLine();
+        UUID book_uuid = UUID.fromString(book_id);
 
         System.out.println("student_id");
         String student_id = scanner.next();
+        UUID student_uuid = UUID.fromString(student_id);
 
 
-        String response = lendingController.createLending(student_name, lending_status, title, author, borrowed_date,
-                due_date, student_id);
+        String response = lendingController.createLending(lending_status, borrowed_date,
+                book_uuid, student_uuid);
 
         System.out.println(response);
     }
 
     public void getLending() {
         System.out.println("Please enter lending id");
-        String id = scanner.next();
+        String sLendingId = scanner.next();
+        UUID lendingId = UUID.fromString(sLendingId);
 
-        String response = lendingController.getLending(id);
+        String response = lendingController.getLending(lendingId);
         System.out.println(response);
     }
 
-    public void removeLending() {
-        System.out.println("please enter lending id");
-        String id = scanner.next();
-
-        String response = lendingController.removeLending(id);
-        System.out.println(response);
-    }
+//    public void removeLending() {
+//        System.out.println("please enter lending id");
+//        String id = scanner.next();
+//
+//        String response = lendingController.removeLending(id);
+//        System.out.println(response);
+//    }
 
     public void getAllLendings() {
         String response = lendingController.getAllLendings();

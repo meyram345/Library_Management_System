@@ -7,6 +7,7 @@ import kz.aitu.oop.endterm.library.repositories.interfaces.IBookRepository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class BookRepository implements IBookRepository {
     private final IDB db;
@@ -20,13 +21,14 @@ public class BookRepository implements IBookRepository {
         Connection con = null;
         try{
             con = db.getConnection();
-            String sql ="INSERT INTO books(title, author, total_amount, lending_period) VALUES (?, ?, ?, ?)";
+            String sql ="INSERT INTO books(book_id, title, author, total_amount, lending_period) VALUES (?, ?, ?, ?, ?)";
             PreparedStatement st = con.prepareStatement(sql);
 
-            st.setString(1, book.getTitle());
-            st.setString(2, book.getAuthor());
-            st.setInt(3, book.getTotalAmount());
-            st.setInt(4, book.getLending_period());
+            st.setObject(1, book.getBook_uuid());
+            st.setString(2, book.getTitle());
+            st.setString(3, book.getAuthor());
+            st.setInt(4, book.getTotalAmount());
+            st.setInt(5, book.getLending_period());
 
             boolean executed = false==st.execute();
             return executed;
@@ -45,18 +47,18 @@ public class BookRepository implements IBookRepository {
     }
 
     @Override
-    public Book getBook(String book_uuid) {
+    public Book getBook(UUID book_uuid) {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "SELECT id, title, author, total_amount FROM books WHERE id=?";
+            String sql = "SELECT book_id, title, author, total_amount FROM books WHERE book_id=?";
             PreparedStatement st = con.prepareStatement(sql);
 
-            st.setString(1, book_uuid);
+            st.setObject(1, book_uuid);
 
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                Book book = new Book(rs.getString("id"),
+                Book book = new Book((UUID) rs.getObject("book_id"),
                         rs.getString("title"),
                         rs.getString("author"),
                         rs.getInt("lending_period"),
@@ -108,13 +110,13 @@ public class BookRepository implements IBookRepository {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "SELECT id, title, author, total_amount FROM books";
+            String sql = "SELECT book_id, title, author, total_amount FROM books";
             Statement st = con.createStatement();
 
             ResultSet rs = st.executeQuery(sql);
             List<Book> books = new ArrayList<>();
             while (rs.next()) {
-                Book book = new Book(rs.getString("id"),
+                Book book = new Book((UUID) rs.getObject("book_id"),
                         rs.getString("title"),
                         rs.getString("author"),
                         rs.getInt("lending_period"),
@@ -137,4 +139,39 @@ public class BookRepository implements IBookRepository {
         }
         return null;
     }
+
+//    @Override
+//    public UUID getBook_id(UUID book_uuid) {
+//        Connection con = null;
+//        try {
+//            con = db.getConnection();
+//            String sql = "SELECT id, title, author, total_amount FROM books WHERE id=?";
+//            PreparedStatement st = con.prepareStatement(sql);
+//
+//            st.setObject(1, book_uuid);
+//
+//            ResultSet rs = st.executeQuery();
+//            if (rs.next()) {
+//                Book book = new Book((UUID) rs.getObject("id"),
+//                        rs.getString("title"),
+//                        rs.getString("author"),
+//                        rs.getInt("lending_period"),
+//                        rs.getInt("total_amount"));
+//
+//                return book;
+//            }
+//        } catch (SQLException throwables) {
+//            throwables.printStackTrace();
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } finally {
+//            try {
+//                con.close();
+//            } catch (SQLException throwables) {
+//                throwables.printStackTrace();
+//            }
+//        }
+//        return null;
+//    }
+
 }

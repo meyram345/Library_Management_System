@@ -1,7 +1,9 @@
 package kz.aitu.oop.endterm.library.entities;
 
+import java.util.UUID;
+
 public class Book {
-        private String book_uuid;
+        private UUID book_uuid;
         private String title;
         private String author;
         private int totalAmount;
@@ -21,7 +23,7 @@ public class Book {
                 setTitle(title);
         }
 
-        public Book(String book_uuid, String title, String author, int lending_period, int totalAmount) {
+        public Book(UUID book_uuid, String title, String author, int lending_period, int totalAmount) {
                 setBook_uuid(book_uuid);
                 setLending_period(lending_period);
                 setTitle(title);
@@ -29,8 +31,8 @@ public class Book {
                 setTotalAmount(totalAmount);
         }
 
-        public String getBook_uuid() {
-                return book_uuid;
+        public UUID getBook_uuid() {
+                return UUID.randomUUID();
         }
 
         public String getTitle() {
@@ -45,8 +47,8 @@ public class Book {
                 return author;
         }
 
-        public void setBook_uuid(String book_uuid) {
-                this.book_uuid = String.valueOf(java.util.UUID.randomUUID());
+        public void setBook_uuid(UUID book_uuid) {
+                this.book_uuid = book_uuid;
         }
 
         public void setAuthor(String author) {

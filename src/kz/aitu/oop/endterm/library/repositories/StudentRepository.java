@@ -7,6 +7,7 @@ import kz.aitu.oop.endterm.library.repositories.interfaces.IStudentRepository;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class StudentRepository implements IStudentRepository {
     private final IDB db;
@@ -20,10 +21,11 @@ public class StudentRepository implements IStudentRepository {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "INSERT INTO Students(name) VALUES (?)";
+            String sql = "INSERT INTO Students(student_id, name) VALUES (?, ?)";
             PreparedStatement st = con.prepareStatement(sql);
 
-            st.setString(1, Student.getName());
+            st.setObject(1, Student.getUuid());
+            st.setString(2, Student.getName());
 
             boolean executed = st.execute();
             return executed;
@@ -68,18 +70,18 @@ public class StudentRepository implements IStudentRepository {
     }
 
     @Override
-    public Student getStudent(String student_uuid) {
+    public Student getStudent(UUID student_uuid) {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "SELECT name FROM students WHERE name = ?";
+            String sql = "SELECT student_id,name FROM students WHERE student_id = ?";
             PreparedStatement st = con.prepareStatement(sql);
 
-            st.setString(1, student_uuid);
+            st.setObject(1, student_uuid);
 
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
-                Student student = new Student(rs.getString("id"),
+                Student student = new Student((UUID) rs.getObject("student_id"),
                         rs.getString("name"));
 
                 return student;
@@ -103,13 +105,13 @@ public class StudentRepository implements IStudentRepository {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "SELECT id, name FROM students";
+            String sql = "SELECT student_id, name FROM students";
             Statement st = con.createStatement();
 
             ResultSet rs = st.executeQuery(sql);
             List<Student> students = new ArrayList<>();
             while (rs.next()) {
-                Student student = new Student(rs.getString("id"),
+                Student student = new Student((UUID) rs.getObject("student_id"),
                         rs.getString("name"));
 
                 students.add(student);

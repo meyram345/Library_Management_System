@@ -6,6 +6,7 @@ import kz.aitu.oop.endterm.library.repositories.interfaces.ILendingRepository;
 import kz.aitu.oop.endterm.library.repositories.interfaces.IStudentRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class LendingController {
     private final ILendingRepository lendingRepository;
@@ -20,15 +21,15 @@ public class LendingController {
         this.studentRepository = studentRepository;
     }
 
-    public String createLending(String student_name, String lending_status, String title, String author,
-                                String borrowed_date, String due_date, String student_id) {
-        Lending lending = new Lending(student_name, lending_status, title, author, borrowed_date, due_date, student_id);
+    public String createLending(String lending_status,
+                                String borrowed_date, UUID book_id, UUID student_id) {
+        Lending lending = new Lending(lending_status, borrowed_date, book_id, student_id);
         boolean created = false == lendingRepository.addLending(lending);
         return (created? "Lending was created!" : "Lending creation was failed!");
     }
 
-    public String getLending(String uuid) {
-        Lending lending = lendingRepository.getLending(uuid);
+    public String getLending(UUID lendingId) {
+        Lending lending = lendingRepository.getLending(lendingId);
 
         return (lending == null ? "Lending was not found!" : "lending status: " + lending.getLending_status() +
                 ", student:" + lending.getStudent_name() + ", book: " + lending.getTitle());
@@ -40,7 +41,7 @@ public class LendingController {
         return lendings.toString(); //change toString
     }
 
-    public String removeLending(String lending_uuid) {
+    public String removeLending(UUID lending_uuid) {
         Lending lending = new Lending(lending_uuid);
 
         boolean removed = false == lendingRepository.removeLending(lending);

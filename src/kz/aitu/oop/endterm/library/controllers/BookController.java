@@ -5,6 +5,7 @@ import kz.aitu.oop.endterm.library.repositories.BookRepository;
 import kz.aitu.oop.endterm.library.repositories.interfaces.IBookRepository;
 
 import java.util.List;
+import java.util.UUID;
 
 public class BookController {
     private final IBookRepository bookRepository;
@@ -16,12 +17,12 @@ public class BookController {
     public String addBook(String title, String author, int total_amount, int lending_period) {
         Book book = new Book(title, author, total_amount, lending_period);
 
-        boolean created = false== bookRepository.addBook(book);
+        boolean created = bookRepository.addBook(book);
 
         return (created ? "Book was added!" : "Book adding was failed!");
     }
 
-    public String getBook(String uuid) {
+    public String getBook(UUID uuid) {
         Book book = bookRepository.getBook(uuid);
 
         return (book == null ? "Book was not found!" : book.getTitle() + ", author:  " + book.getAuthor());

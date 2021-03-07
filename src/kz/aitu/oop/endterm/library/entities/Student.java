@@ -1,7 +1,9 @@
 package kz.aitu.oop.endterm.library.entities;
 
+import java.util.UUID;
+
 public class Student {
-    private String uuid;
+    private UUID uuid;
     private String name;
 
     public Student() {}
@@ -10,7 +12,7 @@ public class Student {
         setName(name);
     }
 
-    public Student(String uuid, String name) {
+    public Student(UUID uuid, String name) {
         setUuid(uuid);
         setName(name);
     }
@@ -19,15 +21,22 @@ public class Student {
         return name;
     }
 
-    public String getUuid() {
-        return uuid;
+    public UUID getUuid() {
+        return UUID.randomUUID();
     }
+
+    public UUID getSimpleUUId() {return this.uuid;}
 
     public void setName(String name) {
         this.name = name;
     }
 
-    public void setUuid(String uuid) {
-        this.uuid = String.valueOf(java.util.UUID.randomUUID());
+    public void setUuid(UUID uuid) {
+        this.uuid = uuid;
+    }
+
+    @Override
+    public String toString() {
+        return "id: " + getSimpleUUId() + ", name: " + getName();
     }
 }
