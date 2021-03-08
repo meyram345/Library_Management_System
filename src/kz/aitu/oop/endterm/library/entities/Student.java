@@ -35,6 +35,8 @@ public class Student {
         this.uuid = uuid;
     }
 
+    public String getStudent_id() {return uuid.toString();}
+
     @Override
     public String toString() {
         return "id: " + getSimpleUUId() + ", name: " + getName();

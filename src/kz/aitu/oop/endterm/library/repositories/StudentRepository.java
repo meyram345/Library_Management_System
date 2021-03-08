@@ -101,6 +101,38 @@ public class StudentRepository implements IStudentRepository {
     }
 
     @Override
+    public Student getStudentByName(String name) {
+        Connection con = null;
+        try {
+            con = db.getConnection();
+            String sql = "SELECT student_id,name FROM students WHERE name = ?";
+            PreparedStatement st = con.prepareStatement(sql);
+
+            st.setObject(1, name);
+
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                Student student = new Student((UUID) rs.getObject("student_id"),
+                        rs.getString("name"));
+
+                return student;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+
+    @Override
     public List<Student> getAllStudents() {
         Connection con = null;
         try {

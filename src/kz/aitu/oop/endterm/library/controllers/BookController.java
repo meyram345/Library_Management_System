@@ -28,6 +28,12 @@ public class BookController {
         return (book == null ? "Book was not found!" : book.getTitle() + ", author:  " + book.getAuthor());
     }
 
+    public String getBookByTitleAndAuthor(String title, String author) {
+        Book book = bookRepository.getBookByTitleAndAuthor(title, author);
+
+        return (book == null ? "Book was not found!" : book.getTitle() + ", author:  " + book.getAuthor());
+    }
+
     public String getAllBooks() {
         List<Book> books = bookRepository.getBooks();
 

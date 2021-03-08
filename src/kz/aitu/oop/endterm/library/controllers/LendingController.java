@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.UUID;
 
 public class LendingController {
-    private final ILendingRepository lendingRepository;
-    private final IBookRepository bookRepository;
-    private final IStudentRepository studentRepository;
+    private ILendingRepository lendingRepository;
+    private IBookRepository bookRepository;
+    private IStudentRepository studentRepository;
 
 
     public LendingController(ILendingRepository lendingRepository, IBookRepository bookRepository,
@@ -21,28 +21,49 @@ public class LendingController {
         this.studentRepository = studentRepository;
     }
 
-    public String createLending(String lending_status,
-                                String borrowed_date, UUID book_id, UUID student_id) {
-        Lending lending = new Lending(lending_status, borrowed_date, book_id, student_id);
-        boolean created = false == lendingRepository.addLending(lending);
+    public String createLending(String borrowed_date, String student_name, String book_title, String author) {
+        Lending lending = new Lending(borrowed_date, student_name, book_title, author);
+        boolean created = lendingRepository.addLending(lending);
         return (created? "Lending was created!" : "Lending creation was failed!");
+    }
+
+    public String getLendingByName(String student, String title, String author) {
+        Lending lending = lendingRepository.getLendingByName(student, title, author);
+
+        return (lending == null ? "Lending was not found!" : lending.toString());
     }
 
     public String getLending(UUID lendingId) {
         Lending lending = lendingRepository.getLending(lendingId);
 
-        return (lending == null ? "Lending was not found!" : "lending status: " + lending.getLending_status() +
-                ", student:" + lending.getStudent_name() + ", book: " + lending.getTitle());
+        return (lending == null ? "Lending was not found!" : ", student:" + lending.getStudent_name() + ", book: " + lending.getTitle());
     }
+
+
 
     public String getAllLendings() {
         List<Lending> lendings = lendingRepository.getAllLendings();
 
-        return lendings.toString(); //change toString
+        String student_lendings = null;
+        for(int i=0;i<lendings.size();i++) {
+            student_lendings = student_lendings + "i+1. " + lendings.get(i).toString() + "\n";
+        }
+
+        return student_lendings;
     }
 
-    public String removeLending(UUID lending_uuid) {
-        Lending lending = new Lending(lending_uuid);
+    public String getLendingsOfStudent(String name) {
+        List<Lending> lendings = lendingRepository.getLendingsOfStudent(name);
+        String student_lendings="";
+        for(int i=0;i<lendings.size();i++) {
+            student_lendings = student_lendings + (i + 1) + ". " + lendings.get(i).toString() + "\n";
+        }
+
+        return student_lendings; //change toString
+    }
+
+    public String removeLending(String student_name, String book_title, String author) {
+        Lending lending = new Lending(student_name, book_title, author);
 
         boolean removed = false == lendingRepository.removeLending(lending);
 

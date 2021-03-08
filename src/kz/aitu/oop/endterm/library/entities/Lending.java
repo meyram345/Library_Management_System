@@ -12,7 +12,6 @@ public class Lending {
     private UUID lending_uuid;
     private String borrowed_date;
     private String due_date;
-    private String lending_status;
     private UUID student_id;
     private String student_name;
     private int lending_period;
@@ -22,38 +21,34 @@ public class Lending {
 
     public Lending() {}
 
-    public Lending(String student_name, String lending_status, String title, String author, String borrowed_date,
+    public Lending(String student_name, String title, String author, String borrowed_date,
                    String due_date, UUID student_id) {
         setAuthor(author);
         setTitle(title);
         setBorrowed_date(borrowed_date);
         setStudent_name(student_name);
-        setLending_status(lending_status);
     }
 
-    public Lending(UUID lending_uuid, String student_name, String lending_status, String title, String author,
+    public Lending(UUID lending_uuid, String student_name, String title, String author,
                    String borrowed_date, String due_date, UUID book_id, UUID student_id) {
         setAuthor(author);
         setTitle(title);
         setLending_uuid(lending_uuid);
         setBorrowed_date(borrowed_date);
         setStudent_name(student_name);
-        setLending_status(lending_status);
         setDue_date(due_date);
         setStudent_id(student_id);
         setBook_id(book_id);  //may cause a problem
     }
 
-    public Lending(String lending_status, String borrowed_date,  UUID book_id, UUID student_id) {
+    public Lending(String borrowed_date,  UUID book_id, UUID student_id) {
         setBorrowed_date(borrowed_date);
-        setLending_status(lending_status);
         setStudent_id(student_id);
         setBook_id(book_id);
     }
 
-    public Lending(UUID id, String lending_status, String borrowed_date,  UUID book_id, UUID student_id) {
+    public Lending(UUID id, String borrowed_date,  UUID book_id, UUID student_id) {
         setBorrowed_date(borrowed_date);
-        setLending_status(lending_status);
         setStudent_id(student_id);
         setBook_id(book_id);
         setLending_uuid(id);
@@ -61,6 +56,27 @@ public class Lending {
 
     public Lending(UUID lending_uuid) {
         setLending_uuid(lending_uuid);
+    }
+
+    public Lending(String name, String title, String author, String borrowed_date, String due_date) {
+        setAuthor(author);
+        setTitle(title);
+        setBorrowed_date(borrowed_date);
+        setDue_date(due_date);
+        setStudent_name(name);
+    }
+
+    public Lending(String borrowed_date, String student_name, String book_title, String author) {
+        setAuthor(author);
+        setTitle(book_title);
+        setStudent_name(student_name);
+        setBorrowed_date(borrowed_date);
+    }
+
+    public Lending(String student_name, String book_title, String author) {
+        setStudent_name(student_name);
+        setTitle(book_title);
+        setAuthor(author);
     }
 
     public java.sql.Date convertToDate(String sDate) throws ParseException {
@@ -131,10 +147,6 @@ public class Lending {
         return due_date;
     }
 
-    public String getLending_status() {
-        return lending_status;
-    }
-
     public UUID getStudent_id() {
         return student_id;
     }
@@ -147,15 +159,17 @@ public class Lending {
         this.due_date = due_date;
     }
 
-    public void setLending_status(String lending_status) {
-        this.lending_status = lending_status;
-    }
-
     public void setStudent_id(UUID student_id) {
         this.student_id = student_id;
     }
 
     public int getLending_period() {
         return lending_period;
+    }
+
+    @Override
+    public String toString() {
+        return "Student name: " + getStudent_name() + "\nBook: " + getTitle() + "\nauthor: " + getAuthor() +
+                "\nborrowed date: " + getBorrowed_date() + "\ndue date: " + getDue_date();
     }
 }

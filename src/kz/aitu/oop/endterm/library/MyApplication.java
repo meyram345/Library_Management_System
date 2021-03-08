@@ -89,8 +89,34 @@ public class MyApplication {
     }
 
     public void studentMenu() {
+        while (true) {
+            System.out.println();
+            System.out.println("Select option");
+            System.out.println("1. My lendings");
+            System.out.println("2. View books");
+            try {
+                System.out.println("Enter option (0-5): ");
+                int option = scanner.nextInt();
+                if (option == 1) {
+                    getLendingsOfStudent();
+                } else if (option == 2) {
+                    getBooks();
+                } else if(option==6) {
+                    start();
+                }
+                else {
+                    break;
+                }
 
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                scanner.next();
+            }
+
+            System.out.println("***********************************");
+        }
     }
+
 
     public void lendingMenu() {
         while (true) {
@@ -100,7 +126,8 @@ public class MyApplication {
             System.out.println("2. Get lending");
             System.out.println("3. Remove lending");
             System.out.println("4. Get all lendings");
-            System.out.println("5. Main menu");
+            System.out.println("5. Get lendings of students");
+            System.out.println("6. Main menu");
             System.out.println("0. Exit");
             System.out.println();
             try {
@@ -109,12 +136,14 @@ public class MyApplication {
                 if (option == 1) {
                     addLending();
                 } else if (option == 2) {
-                    getLending();
+                    getLendingByName();
                 } else if (option == 3) {
-                    //removeLending();
+                    removeLending();
                 } else if (option == 4) {
                     getAllLendings();
-                } else if(option==5) {
+                } else if (option == 5) {
+                    getLendingsOfStudent();
+                }  else if(option==6) {
                     start();
                 }
                 else {
@@ -147,7 +176,7 @@ public class MyApplication {
                 if (option == 1) {
                     addBook();
                 } else if (option == 2) {
-                    getBook();
+                    getBookByTitleAndAuthor();
                 } else if (option == 3) {
                     removeBook();
                 } else if (option == 4) {
@@ -222,7 +251,7 @@ public class MyApplication {
         int lending_period = scanner.nextInt();
 
 
-        String response = bookController.addBook(title, author, amount, lending_period);
+        String response = bookController.addBook(title, author, lending_period, amount);
         System.out.println(response);
     }
 
@@ -250,6 +279,18 @@ public class MyApplication {
         String id = scanner.next();
         UUID uuid = UUID.fromString(id);
         String response = bookController.getBook(uuid);
+        System.out.println(response);
+    }
+
+    public void getBookByTitleAndAuthor() {
+        System.out.println("please enter title");
+        String title = scanner.next();
+        title += scanner.nextLine();
+
+        System.out.println("author");
+        String author = scanner.next();
+        author += scanner.nextLine();
+        String response = bookController.getBookByTitleAndAuthor(title, author);
         System.out.println(response);
     }
 
@@ -286,8 +327,6 @@ public class MyApplication {
 //        String student_name = scanner.next();
 //        student_name += scanner.nextLine();
 
-        System.out.println("Please enter lending status");
-        String lending_status = scanner.next();
 
 //        System.out.println("please enter title of the book");
 //        String title = scanner.next();
@@ -303,18 +342,20 @@ public class MyApplication {
 //        System.out.println("due_date");
 //        String due_date = scanner.next();
 
-        System.out.println("book id");
-        String book_id = scanner.next();
-        book_id += scanner.nextLine();
-        UUID book_uuid = UUID.fromString(book_id);
+        System.out.println("Please enter name of the student");
+        String name = scanner.next();
+        name += scanner.nextLine();
 
-        System.out.println("student_id");
-        String student_id = scanner.next();
-        UUID student_uuid = UUID.fromString(student_id);
+        System.out.println("Please enter title of the book: ");
+        String book_title = scanner.next();
+        book_title += scanner.nextLine();
+
+        System.out.println("Please enter name of the author");
+        String author = scanner.next();
+        author += scanner.nextLine();
 
 
-        String response = lendingController.createLending(lending_status, borrowed_date,
-                book_uuid, student_uuid);
+        String response = lendingController.createLending(borrowed_date, name, book_title, author);
 
         System.out.println(response);
     }
@@ -328,16 +369,52 @@ public class MyApplication {
         System.out.println(response);
     }
 
-//    public void removeLending() {
-//        System.out.println("please enter lending id");
-//        String id = scanner.next();
-//
-//        String response = lendingController.removeLending(id);
-//        System.out.println(response);
-//    }
+    public void getLendingByName() {
+        System.out.println("Please enter name of the student");
+        String student_name = scanner.next();
+        student_name += scanner.nextLine();
+
+        System.out.println("Title of the book:");
+        String title = scanner.next();
+        title += scanner.nextLine();
+
+        System.out.println("Author of the book:");
+        String author = scanner.next();
+        author += scanner.nextLine();
+
+        String response = lendingController.getLendingByName(student_name, title, author);
+        System.out.println("\n");
+        System.out.println(response);
+    }
+
+    public void removeLending() {
+        System.out.println("Please enter name of the student");
+        String student_name = scanner.next();
+        student_name += scanner.nextLine();
+
+        System.out.println("Title of the book:");
+        String title = scanner.next();
+        title += scanner.nextLine();
+
+        System.out.println("Author of the book:");
+        String author = scanner.next();
+        author += scanner.nextLine();
+
+        String response = lendingController.removeLending(student_name, title, author);
+        System.out.println(response);
+    }
 
     public void getAllLendings() {
         String response = lendingController.getAllLendings();
+        System.out.println(response);
+    }
+
+    public void getLendingsOfStudent() {
+        System.out.println("Please enter the name of the student:");
+        String name = scanner.next();
+        name += scanner.nextLine();
+
+        String response = lendingController.getLendingsOfStudent(name);
         System.out.println(response);
     }
 

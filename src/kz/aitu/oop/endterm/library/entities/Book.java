@@ -31,7 +31,8 @@ public class Book {
                 setTotalAmount(totalAmount);
         }
 
-        public UUID getBook_uuid() {
+
+    public UUID getBook_uuid() {
                 return UUID.randomUUID();
         }
 
@@ -50,6 +51,8 @@ public class Book {
         public void setBook_uuid(UUID book_uuid) {
                 this.book_uuid = book_uuid;
         }
+
+        public String getBook_id() {return book_uuid.toString();}
 
         public void setAuthor(String author) {
                 this.author = author;

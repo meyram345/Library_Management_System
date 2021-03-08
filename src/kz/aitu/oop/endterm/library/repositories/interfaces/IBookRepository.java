@@ -11,4 +11,6 @@ public interface IBookRepository {
     Book getBook(UUID book_uuid);
     //int getLendingPeriod(String title, String author);
     List<Book> getBooks();
+
+    Book getBookByTitleAndAuthor(String title, String author);
 }

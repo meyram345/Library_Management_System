@@ -14,7 +14,7 @@ public class Main {
         IDB db = new PostgresDB();
         IBookRepository bookRepository = new BookRepository(db);
         IStudentRepository studentRepository = new StudentRepository(db);
-        ILendingRepository lendingRepository = new LendingRepository(db);
+        ILendingRepository lendingRepository = new LendingRepository(db, bookRepository, studentRepository);
         MyApplication app = new MyApplication(lendingRepository, bookRepository, studentRepository);
         app.start();
     }

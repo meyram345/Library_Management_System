@@ -51,10 +51,45 @@ public class BookRepository implements IBookRepository {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "SELECT book_id, title, author, total_amount FROM books WHERE book_id=?";
+            String sql = "SELECT book_id, title, author, total_amount, lending_period FROM books WHERE book_id=?";
             PreparedStatement st = con.prepareStatement(sql);
 
             st.setObject(1, book_uuid);
+
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                Book book = new Book((UUID) rs.getObject("book_id"),
+                        rs.getString("title"),
+                        rs.getString("author"),
+                        rs.getInt("lending_period"),
+                        rs.getInt("total_amount"));
+
+                return book;
+            }
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                con.close();
+            } catch (SQLException throwables) {
+                throwables.printStackTrace();
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public Book getBookByTitleAndAuthor(String title, String author) {
+        Connection con = null;
+        try {
+            con = db.getConnection();
+            String sql = "SELECT book_id, title, author, lending_period, total_amount FROM books WHERE title = ? AND author = ?";
+            PreparedStatement st = con.prepareStatement(sql);
+
+            st.setString(1, title);
+            st.setString(2, author);
 
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -104,6 +139,8 @@ public class BookRepository implements IBookRepository {
         }
         return false;
     }
+
+
 
     @Override
     public List<Book> getBooks() {
