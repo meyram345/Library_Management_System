@@ -6,7 +6,6 @@ import kz.aitu.oop.endterm.library.repositories.interfaces.ILendingRepository;
 import kz.aitu.oop.endterm.library.repositories.interfaces.IStudentRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 public class LendingController {
     private ILendingRepository lendingRepository;
@@ -27,34 +26,30 @@ public class LendingController {
         return (created? "Lending was created!" : "Lending creation was failed!");
     }
 
-    public String getLendingByName(String student, String title, String author) {
-        Lending lending = lendingRepository.getLendingByName(student, title, author);
+    public String getLending(String student, String title, String author) {
+        Lending lending = lendingRepository.getLending(student, title, author);
 
         return (lending == null ? "Lending was not found!" : lending.toString());
     }
 
-    public String getLending(UUID lendingId) {
-        Lending lending = lendingRepository.getLending(lendingId);
-
-        return (lending == null ? "Lending was not found!" : ", student:" + lending.getStudent_name() + ", book: " + lending.getTitle());
-    }
-
-
-
     public String getAllLendings() {
         List<Lending> lendings = lendingRepository.getAllLendings();
 
-        String student_lendings = null;
+        //handling array
+        String student_lendings = "";
         for(int i=0;i<lendings.size();i++) {
-            student_lendings = student_lendings + "i+1. " + lendings.get(i).toString() + "\n";
+            student_lendings = student_lendings + (i + 1) + ". " + lendings.get(i).toString() + "\n";
         }
 
         return student_lendings;
     }
 
+
+    //getting lendings of some student
     public String getLendingsOfStudent(String name) {
         List<Lending> lendings = lendingRepository.getLendingsOfStudent(name);
         String student_lendings="";
+        //handling array
         for(int i=0;i<lendings.size();i++) {
             student_lendings = student_lendings + (i + 1) + ". " + lendings.get(i).toString() + "\n";
         }

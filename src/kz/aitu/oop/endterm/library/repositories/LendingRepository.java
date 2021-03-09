@@ -14,6 +14,8 @@ import java.util.UUID;
 
 public class LendingRepository implements ILendingRepository {
     private final IDB db;
+
+    //import book and student repositories in order to get access to their columns
     private IBookRepository bookRepository;
     private IStudentRepository studentRepository;
 
@@ -36,14 +38,21 @@ public class LendingRepository implements ILendingRepository {
             PreparedStatement st = con.prepareStatement(sql);
 
             st.setObject(1, lending.getLending_uuid());
+            //converting String date to sqlDate
             st.setDate(2, lending.convertToDate(lending.getBorrowed_date()));
+
+            //calculating due_date = borrowed_date + lending_period
             st.setDate(3,
                     lending.calculateDueDate(lending.getBorrowed_date(),
-                            bookRepository.getBookByTitleAndAuthor(lending.getTitle(),
+                            bookRepository.getBook(lending.getTitle(),
                                     lending.getAuthor()).getLending_period()));
-            st.setObject(4, UUID.fromString(bookRepository.getBookByTitleAndAuthor(lending.getTitle(),
+
+            //getting access to book id using title and author with help of bookRepository
+            st.setObject(4, UUID.fromString(bookRepository.getBook(lending.getTitle(),
                     lending.getAuthor()).getBook_id()));
-            st.setObject(5, UUID.fromString(studentRepository.getStudentByName(lending.getStudent_name()).getStudent_id()));
+
+            //getting access to student id using name with help of studentRepository
+            st.setObject(5, UUID.fromString(studentRepository.getStudent(lending.getStudent_name()).getStudent_id()));
 
             boolean executed = false==st.execute();
             return executed;
@@ -63,50 +72,8 @@ public class LendingRepository implements ILendingRepository {
         return false;
     }
 
-
-
     @Override
-    public Lending getLending(UUID lendingId) {
-        Connection con = null;
-        try {
-            con = db.getConnection();
-            String sql = "SELECT book_lendings.lending_id, students.name, books.title, books.author, " +
-                    "borrowed_date, due_date, books.book_id, students.student_id FROM book_lendings\n" +
-                    "INNER JOIN books ON book_lendings.book_id = books.book_id\n" +
-                    "INNER JOIN students ON book_lendings.student_id = students.student_id WHERE book_lendings.lending_id = ?";
-            PreparedStatement st = con.prepareStatement(sql);
-
-            st.setObject(1, lendingId);
-
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Lending lending = new Lending((UUID) rs.getObject("lending_id"),
-                        rs.getString("name"),
-                        rs.getString("title"),
-                        rs.getString("author"),
-                        rs.getString("borrowed_date"),
-                        rs.getString("due_date"),
-                        (UUID) rs.getObject("book_id"),
-                        (UUID) rs.getObject("student_id"));
-
-                return lending;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Lending getLendingByName(String student, String title, String author) {
+    public Lending getLending(String student, String title, String author) {
         Connection con = null;
         try {
             con = db.getConnection();
@@ -117,9 +84,10 @@ public class LendingRepository implements ILendingRepository {
                     "books.title = ? AND books.author = ?";
             PreparedStatement st = con.prepareStatement(sql);
 
-            st.setString(1, studentRepository.getStudentByName(student).getName());
-            st.setString(2, bookRepository.getBookByTitleAndAuthor(title, author).getTitle());
-            st.setString(3, bookRepository.getBookByTitleAndAuthor(title, author).getAuthor());
+            //getting access to the variables of book and student using repository methods
+            st.setString(1, studentRepository.getStudent(student).getName());
+            st.setString(2, bookRepository.getBook(title, author).getTitle());
+            st.setString(3, bookRepository.getBook(title, author).getAuthor());
 
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
@@ -154,10 +122,11 @@ public class LendingRepository implements ILendingRepository {
 
         try {
             con = db.getConnection();
+            //getting access to the IDs of book and student using repository methods
             String sql = "DELETE FROM book_lendings WHERE student_id = " + "\'" +
-                    UUID.fromString(studentRepository.getStudentByName(lending.getStudent_name()).getStudent_id()) + "\'" +
-                    "AND book_id = '" + UUID.fromString(bookRepository.getBookByTitleAndAuthor(lending.getTitle(),
-                    lending.getAuthor()).getBook_id()) + "\'";
+                    UUID.fromString(studentRepository.getStudent(lending.getStudent_name()).getStudent_id()) + "\'" +
+                    "AND book_id = '" + UUID.fromString(bookRepository.getBook(lending.getTitle(),
+                    lending.getAuthor()).getBook_id()) + "\'";//
             PreparedStatement st = con.prepareStatement(sql);
 
             boolean executed = st.execute();
@@ -218,6 +187,7 @@ public class LendingRepository implements ILendingRepository {
         return null;
     }
 
+    //getting lendings of some student
     @Override
     public List<Lending> getLendingsOfStudent(String name) {
         Connection con = null;

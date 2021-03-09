@@ -16,19 +16,19 @@ public class BookRepository implements IBookRepository {
         this.db = db;
     }
 
+    //method for creating book
     @Override
     public boolean addBook(Book book) {
         Connection con = null;
         try{
             con = db.getConnection();
-            String sql ="INSERT INTO books(book_id, title, author, total_amount, lending_period) VALUES (?, ?, ?, ?, ?)";
+            String sql ="INSERT INTO books(book_id, title, author, lending_period) VALUES (?, ?, ?, ?)";
             PreparedStatement st = con.prepareStatement(sql);
 
             st.setObject(1, book.getBook_uuid());
             st.setString(2, book.getTitle());
             st.setString(3, book.getAuthor());
-            st.setInt(4, book.getTotalAmount());
-            st.setInt(5, book.getLending_period());
+            st.setInt(4, book.getLending_period());
 
             boolean executed = false==st.execute();
             return executed;
@@ -46,46 +46,13 @@ public class BookRepository implements IBookRepository {
         return false;
     }
 
+
     @Override
-    public Book getBook(UUID book_uuid) {
+    public Book getBook(String title, String author) {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "SELECT book_id, title, author, total_amount, lending_period FROM books WHERE book_id=?";
-            PreparedStatement st = con.prepareStatement(sql);
-
-            st.setObject(1, book_uuid);
-
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Book book = new Book((UUID) rs.getObject("book_id"),
-                        rs.getString("title"),
-                        rs.getString("author"),
-                        rs.getInt("lending_period"),
-                        rs.getInt("total_amount"));
-
-                return book;
-            }
-        } catch (SQLException throwables) {
-            throwables.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                con.close();
-            } catch (SQLException throwables) {
-                throwables.printStackTrace();
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public Book getBookByTitleAndAuthor(String title, String author) {
-        Connection con = null;
-        try {
-            con = db.getConnection();
-            String sql = "SELECT book_id, title, author, lending_period, total_amount FROM books WHERE title = ? AND author = ?";
+            String sql = "SELECT book_id, title, author, lending_period FROM books WHERE title = ? AND author = ?";
             PreparedStatement st = con.prepareStatement(sql);
 
             st.setString(1, title);
@@ -96,8 +63,7 @@ public class BookRepository implements IBookRepository {
                 Book book = new Book((UUID) rs.getObject("book_id"),
                         rs.getString("title"),
                         rs.getString("author"),
-                        rs.getInt("lending_period"),
-                        rs.getInt("total_amount"));
+                        rs.getInt("lending_period"));
 
                 return book;
             }
@@ -143,21 +109,19 @@ public class BookRepository implements IBookRepository {
 
 
     @Override
-    public List<Book> getBooks() {
+    public List<Book> getAllBooks() {
         Connection con = null;
         try {
             con = db.getConnection();
-            String sql = "SELECT book_id, title, author, total_amount FROM books";
+            String sql = "SELECT title, author FROM books";
             Statement st = con.createStatement();
 
             ResultSet rs = st.executeQuery(sql);
             List<Book> books = new ArrayList<>();
             while (rs.next()) {
-                Book book = new Book((UUID) rs.getObject("book_id"),
+                Book book = new Book(
                         rs.getString("title"),
-                        rs.getString("author"),
-                        rs.getInt("lending_period"),
-                        rs.getInt("total_amount"));
+                        rs.getString("author"));
 
                 books.add(book);
             }
@@ -176,39 +140,5 @@ public class BookRepository implements IBookRepository {
         }
         return null;
     }
-
-//    @Override
-//    public UUID getBook_id(UUID book_uuid) {
-//        Connection con = null;
-//        try {
-//            con = db.getConnection();
-//            String sql = "SELECT id, title, author, total_amount FROM books WHERE id=?";
-//            PreparedStatement st = con.prepareStatement(sql);
-//
-//            st.setObject(1, book_uuid);
-//
-//            ResultSet rs = st.executeQuery();
-//            if (rs.next()) {
-//                Book book = new Book((UUID) rs.getObject("id"),
-//                        rs.getString("title"),
-//                        rs.getString("author"),
-//                        rs.getInt("lending_period"),
-//                        rs.getInt("total_amount"));
-//
-//                return book;
-//            }
-//        } catch (SQLException throwables) {
-//            throwables.printStackTrace();
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        } finally {
-//            try {
-//                con.close();
-//            } catch (SQLException throwables) {
-//                throwables.printStackTrace();
-//            }
-//        }
-//        return null;
-//    }
 
 }

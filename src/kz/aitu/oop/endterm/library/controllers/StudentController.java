@@ -4,7 +4,6 @@ import kz.aitu.oop.endterm.library.entities.Student;
 import kz.aitu.oop.endterm.library.repositories.interfaces.IStudentRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 public class StudentController {
     private final IStudentRepository studentRepository;
@@ -16,13 +15,13 @@ public class StudentController {
     public String createStudent(String name) {
         Student student = new Student(name);
 
-        boolean created = studentRepository.createStudent(student);
+        boolean created = studentRepository.createStudent(student); //calling repository method
 
         return (created ? "Student was created!" : "Student creation was failed!");
     }
 
-    public String getStudent(UUID uuid) {
-        Student student = studentRepository.getStudent(uuid);
+    public String getStudent(String name) {
+        Student student = studentRepository.getStudent(name);
 
         return (student == null ? "Student was not found!" : student.toString());
     }
@@ -30,13 +29,18 @@ public class StudentController {
     public String getAllStudents() {
         List<Student> students = studentRepository.getAllStudents();
 
-        return students.toString();
+        String allStudents = "";
+        for(int i=0;i<students.size();i++) {
+            allStudents = allStudents + (i+1) + ". " + students.get(i).toString() + "\n";
+        }
+
+        return allStudents;
     }
 
     public String removeStudent(String name) {
         Student student = new Student(name);
 
-        boolean removed = studentRepository.removeStudent(student);
+        boolean removed = false == studentRepository.removeStudent(student);
         return (removed? "Student was removed" : "Student removal was failed");
     }
 }

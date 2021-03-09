@@ -8,8 +8,7 @@ import java.util.UUID;
 public interface ILendingRepository {
     boolean addLending(Lending lending);
     boolean removeLending(Lending lending);
-    Lending getLending(UUID lending_id);
-    Lending getLendingByName(String student, String title, String author);
+    Lending getLending(String student, String title, String author);
     List<Lending> getAllLendings();
     List<Lending> getLendingsOfStudent(String name);
 }

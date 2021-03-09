@@ -101,7 +101,7 @@ public class StudentRepository implements IStudentRepository {
     }
 
     @Override
-    public Student getStudentByName(String name) {
+    public Student getStudent(String name) {
         Connection con = null;
         try {
             con = db.getConnection();

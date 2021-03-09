@@ -1,11 +1,9 @@
 package kz.aitu.oop.endterm.library.controllers;
 
 import kz.aitu.oop.endterm.library.entities.Book;
-import kz.aitu.oop.endterm.library.repositories.BookRepository;
 import kz.aitu.oop.endterm.library.repositories.interfaces.IBookRepository;
 
 import java.util.List;
-import java.util.UUID;
 
 public class BookController {
     private final IBookRepository bookRepository;
@@ -14,30 +12,31 @@ public class BookController {
         this.bookRepository = repository;
     }
 
-    public String addBook(String title, String author, int total_amount, int lending_period) {
-        Book book = new Book(title, author, total_amount, lending_period);
+    public String addBook(String title, String author, int lending_period) {
+        Book book = new Book(title, author, lending_period);
 
         boolean created = bookRepository.addBook(book);
 
         return (created ? "Book was added!" : "Book adding was failed!");
     }
 
-    public String getBook(UUID uuid) {
-        Book book = bookRepository.getBook(uuid);
 
-        return (book == null ? "Book was not found!" : book.getTitle() + ", author:  " + book.getAuthor());
-    }
+    public String getBook(String title, String author) {
+        Book book = bookRepository.getBook(title, author);
 
-    public String getBookByTitleAndAuthor(String title, String author) {
-        Book book = bookRepository.getBookByTitleAndAuthor(title, author);
-
-        return (book == null ? "Book was not found!" : book.getTitle() + ", author:  " + book.getAuthor());
+        return (book == null ? "Book was not found!" : book.toString());
     }
 
     public String getAllBooks() {
-        List<Book> books = bookRepository.getBooks();
+        List<Book> books = bookRepository.getAllBooks();
 
-        return books.toString();
+        //handling array
+        String allBooks = "";
+        for(int i=0;i<books.size();i++) {
+            allBooks = allBooks + (i+1) + ". " + books.get(i).toString() + "\n";
+        }
+
+        return allBooks;
     }
 
     public String removeBook(String title, String author_name) {

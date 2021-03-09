@@ -2,10 +2,7 @@ package kz.aitu.oop.endterm.library.entities;
 
 import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Calendar;
 import java.util.UUID;
 
 public class Lending {
@@ -14,20 +11,11 @@ public class Lending {
     private String due_date;
     private UUID student_id;
     private String student_name;
-    private int lending_period;
     private UUID book_id;
     private String title;
     private String author;
 
     public Lending() {}
-
-    public Lending(String student_name, String title, String author, String borrowed_date,
-                   String due_date, UUID student_id) {
-        setAuthor(author);
-        setTitle(title);
-        setBorrowed_date(borrowed_date);
-        setStudent_name(student_name);
-    }
 
     public Lending(UUID lending_uuid, String student_name, String title, String author,
                    String borrowed_date, String due_date, UUID book_id, UUID student_id) {
@@ -38,24 +26,7 @@ public class Lending {
         setStudent_name(student_name);
         setDue_date(due_date);
         setStudent_id(student_id);
-        setBook_id(book_id);  //may cause a problem
-    }
-
-    public Lending(String borrowed_date,  UUID book_id, UUID student_id) {
-        setBorrowed_date(borrowed_date);
-        setStudent_id(student_id);
         setBook_id(book_id);
-    }
-
-    public Lending(UUID id, String borrowed_date,  UUID book_id, UUID student_id) {
-        setBorrowed_date(borrowed_date);
-        setStudent_id(student_id);
-        setBook_id(book_id);
-        setLending_uuid(id);
-    }
-
-    public Lending(UUID lending_uuid) {
-        setLending_uuid(lending_uuid);
     }
 
     public Lending(String name, String title, String author, String borrowed_date, String due_date) {
@@ -79,11 +50,13 @@ public class Lending {
         setAuthor(author);
     }
 
+    //converting String date to sql Date
     public java.sql.Date convertToDate(String sDate) throws ParseException {
         java.sql.Date dDate = Date.valueOf(sDate);
         return dDate;
     }
 
+    //calculating due_date = borrowed_date + lending_period
     public java.sql.Date calculateDueDate(String sBorrowed_date, int lending_period) throws ParseException {
         //converting borrowed date to a Date format
         LocalDate localDate = LocalDate.parse(sBorrowed_date);
@@ -131,9 +104,6 @@ public class Lending {
         this.book_id = book_id;
     }
 
-    public void setLending_period(int lending_period) {
-        this.lending_period = lending_period;
-    }
 
     public String getStudent_name() {
         return student_name;
@@ -163,9 +133,6 @@ public class Lending {
         this.student_id = student_id;
     }
 
-    public int getLending_period() {
-        return lending_period;
-    }
 
     @Override
     public String toString() {
